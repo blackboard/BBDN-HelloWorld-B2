@@ -1,0 +1,93 @@
+buildscript {  
+    repositories {  
+        jcenter()  
+    }  
+  
+  
+    dependencies {  
+        classpath 'com.bmuschko:gradle-tomcat-plugin:2.2.5'  
+    }  
+}  
+  
+  
+apply plugin: 'com.bmuschko.tomcat' 
+apply plugin: "java"
+apply plugin: "war"
+apply plugin: "maven"
+
+// define the version for the project when publishing to maven
+group "bbdn.sample"
+version "1.0-SNAPSHOT"
+
+repositories {
+  mavenCentral()
+  maven {
+    url "https://maven.blackboard.com/content/repositories/releases/"
+  }
+}
+
+configurations {
+  buildUtils
+}
+
+tomcat {
+    jasper {
+        validateXml = true
+        webXmlFragment = file("$webAppDir/WEB-INF/generated_web.xml")
+        addWebXmlMappings = true
+    }
+}
+
+// define the project's dependencies
+dependencies {
+
+  def tomcatVersion = '8.0.42'  
+  tomcat  "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",  
+          "org.apache.tomcat.embed:tomcat-embed-logging-juli:${tomcatVersion}",  
+          "org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}",
+          "blackboard.platform:bb-platform:3700.0.0",
+           "blackboard.platform:bb-taglibs:3700.0.0"
+  
+  compile( "com.sun.jersey:jersey-server:1.19.4" )
+  compile( "com.sun.jersey:jersey-core:1.19.4" )
+  compile( "com.sun.jersey:jersey-servlet:1.19.4" )
+  compile( "com.sun.jersey:jersey-json:1.19.4" )
+  compile( "javax.cache:cache-api:1.1.0" )
+  
+
+  // Dependencies are libraries needed to build, but should not be included in the B2 WAR.
+  // You should NEVER include Learn JARs (other than webapis) in your B2.
+  providedCompile( "blackboard.platform:bb-platform:3700.0.0" ) { transitive = false }
+  providedCompile( "blackboard.platform:bb-taglibs:3700.0.0" ) { transitive = false }
+
+  // Building a Spring B2?  Use our Spring APIs!
+  // compile "blackboard.platform:bb-spring-webapi:10.1"
+
+  // Include the Blackboard security APIs for protecting your B2.
+  // providedCompile "blackboard.plugin:security:1.0:api"
+
+  // Dependencies that are only necessary at runtime so should be included in the WAR
+  // runtime "org.javassist:javassist:3.17.1-GA"
+
+  buildUtils "org.oscelot:b2deploy-task:0.1.0"
+}
+
+// Add a task to deploy a B2 using starting block
+task deployB2( dependsOn: "war" ) {
+      ant.taskdef( name: "b2deploy", classname: "org.oscelot.ant.B2DeployTask", classpath: project.configurations.buildUtils.asPath )
+      ant.b2deploy( localfilepath: project.war.archivePath, host: 'http://localhost:9876', courseorgavailable: 'true', clean: 'true', webappName: 'bb-starting-block-BBLEARN' )
+}
+
+task compileJsps(type: JavaCompile) {
+  group = 'build'
+  description = 'Translates and compiles JSPs'
+  classpath = configurations.tomcat + sourceSets.main.output + sourceSets.main.runtimeClasspath
+  sourceCompatibility = '1.8'
+  targetCompatibility = '1.8'
+  destinationDir = file("src/main/webapp/WEB-INF/classes")
+  source = file("build/jasper/org/apache/jsp")
+  dependsOn classes
+  dependsOn tomcatJasper
+}
+
+war.dependsOn compileJsps

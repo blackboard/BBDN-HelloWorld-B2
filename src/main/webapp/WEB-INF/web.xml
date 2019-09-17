@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app  xmlns="http://java.sun.com/xml/ns/javaee"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+          version="3.0" metadata-complete="true">
+
+  <display-name>B2REST</display-name>
+
+  <servlet>
+    <servlet-name>CourseToc REST Service</servlet-name>
+    
+    <servlet-class>
+      com.sun.jersey.spi.container.servlet.ServletContainer
+    </servlet-class>
+    
+    <init-param>
+      <param-name>com.sun.jersey.config.property.packages</param-name>
+      <param-value>bbdn.sample.b2rest.rest</param-value>
+    </init-param>
+
+    <init-param>
+        <param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>
+        <param-value>true</param-value>
+    </init-param>
+
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  
+  <!-- JSPC servlet mappings start -->
+
+    <servlet>
+        <servlet-name>org.apache.jsp.admin.config_jsp</servlet-name>
+        <servlet-class>org.apache.jsp.admin.config_jsp</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>org.apache.jsp.admin.config_jsp</servlet-name>
+        <url-pattern>/admin/config.jsp</url-pattern>
+    </servlet-mapping>
+
+<!-- JSPC servlet mappings end -->
+
+<servlet-mapping>
+    <servlet-name>CourseToc REST Service</servlet-name>
+    <url-pattern>/b2rest/*</url-pattern>
+  </servlet-mapping>
+  
+  <absolute-ordering/>
+
+</web-app>
