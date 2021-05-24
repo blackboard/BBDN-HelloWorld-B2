@@ -1,4 +1,4 @@
-Copyright (C) 2019, Blackboard Inc.
+Copyright (C) 2021, Blackboard Inc.
 
 All rights reserved.
 

@@ -1,0 +1,12 @@
+bbdn/sample/b2rest/model/TocEntry.java
+ bbdn.sample.b2rest.model.TocEntry
+bbdn/sample/b2rest/rest/CourseTocResource.java
+ bbdn.sample.b2rest.rest.CourseTocResource
+bbdn/sample/b2rest/util/CredentialUtil.java
+ bbdn.sample.b2rest.util.CredentialUtil
+bbdn/sample/b2rest/controller/TocHandler.java
+ bbdn.sample.b2rest.controller.TocHandler
+bbdn/sample/b2rest/model/Token.java
+ bbdn.sample.b2rest.model.Token
+bbdn/sample/b2rest/util/TokenUtil.java
+ bbdn.sample.b2rest.util.TokenUtil
