@@ -1,11 +1,12 @@
 buildscript {  
     repositories {  
-        jcenter()  
+	gradlePluginPortal()
+        mavenCentral()  
     }  
   
   
     dependencies {  
-        classpath 'com.bmuschko:gradle-tomcat-plugin:2.2.5'  
+        classpath 'com.bmuschko:gradle-tomcat-plugin:2.7.0'  
     }  
 }  
   
@@ -13,7 +14,7 @@ buildscript {
 apply plugin: 'com.bmuschko.tomcat' 
 apply plugin: "java"
 apply plugin: "war"
-apply plugin: "maven"
+apply plugin: "maven-publish"
 
 // define the version for the project when publishing to maven
 group "bbdn.sample"
@@ -48,13 +49,13 @@ dependencies {
           "blackboard.platform:bb-platform:3700.0.0",
            "blackboard.platform:bb-taglibs:3700.0.0"
   
-  compile( "com.sun.jersey:jersey-server:1.19.4" )
-  compile( "com.sun.jersey:jersey-core:1.19.4" )
-  compile( "com.sun.jersey:jersey-servlet:1.19.4" )
-  compile( "com.sun.jersey:jersey-json:1.19.4" )
-  compile( "javax.cache:cache-api:1.1.0" )
+  implementation( "com.sun.jersey:jersey-server:1.19.4" )
+  implementation( "com.sun.jersey:jersey-core:1.19.4" )
+  implementation( "com.sun.jersey:jersey-servlet:1.19.4" )
+  implementation( "com.sun.jersey:jersey-json:1.19.4" )
+  implementation( "javax.cache:cache-api:1.1.0" )
   
-
+ 
   // Dependencies are libraries needed to build, but should not be included in the B2 WAR.
   // You should NEVER include Learn JARs (other than webapis) in your B2.
   providedCompile( "blackboard.platform:bb-platform:3900.13.0" ) { transitive = false }
@@ -76,7 +77,7 @@ task compileJsps(type: JavaCompile) {
   classpath = configurations.tomcat + sourceSets.main.output + sourceSets.main.runtimeClasspath
   sourceCompatibility = '1.8'
   targetCompatibility = '1.8'
-  destinationDir = file("src/main/webapp/WEB-INF/classes")
+  destinationDirectory = file("src/main/webapp/WEB-INF/classes")
   source = file("build/jasper/org/apache/jsp")
   dependsOn classes
   dependsOn tomcatJasper
